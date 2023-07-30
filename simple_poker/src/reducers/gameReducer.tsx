@@ -64,6 +64,14 @@ const gameReducer = createSlice({
     setIsChecking: (state) => {
       state.isChecking = !state.isChecking;
     },
+    setCardLayoutLabels: (state, action: PayloadAction<string[]>) => {
+      state.opponent.cardLayoutLabel = action.payload[0];
+      state.player.cardLayoutLabel = action.payload[1];
+    },
+    setPoints: (state, action: PayloadAction<number[]>) => {
+      state.opponent.points = action.payload[0];
+      state.player.points = action.payload[1];
+    },
     setNextRoundState: (state, action: PayloadAction<number[]>) => {
       shuffledDeck = shuffleArray(cardArray);
       state.gameDeck = shuffledDeck.slice(10);
@@ -87,6 +95,8 @@ export const {
   setPlayerState,
   setIsStart,
   setIsChecking,
-  setNextRoundState } = gameReducer.actions;
+  setNextRoundState,
+  setPoints,
+  setCardLayoutLabels } = gameReducer.actions;
 
 export default gameReducer.reducer;
