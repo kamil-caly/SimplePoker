@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { CardsReducerState } from "./reducers/state";
-import { setIsChecking, setIsStart, setOpponentState, setPlayerState } from "./reducers/gameReducer";
+import { setInitialState, setIsChecking, setIsStart, setOpponentState, setPlayerState } from "./reducers/gameReducer";
 import { useState, useEffect } from "react";
 
 export default function Menu() {
@@ -112,8 +112,13 @@ export default function Menu() {
     dispatch(setIsChecking());
   }
 
+  const nextRoundClick = () => {
+    dispatch(setInitialState());
+  }
+
   return (
     <div className="menu">
+        <button className="main-button next-button" onClick={nextRoundClick} hidden={!gameState.isChecking}>Next</button>
         <button className="main-button" onClick={() => newGameClick()} disabled={gameState.isStartGame}>NewGame</button>
         <button className="main-button" onClick={() => exchangeCards()} disabled={!gameState.isStartGame || changeCardsClicked}>Change Cards</button>
         <button className="main-button" onClick={() => checkCards()} disabled={!gameState.isStartGame || gameState.isChecking}>Check Cards</button>

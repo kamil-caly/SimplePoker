@@ -25,7 +25,7 @@ const shuffleArray = (array: string[]): string[] => {
   return array;
 }
 
-const shuffledDeck = shuffleArray(cardArray);
+let shuffledDeck = shuffleArray(cardArray);
 
 const initialState: CardsReducerState = {
   player: {
@@ -38,7 +38,7 @@ const initialState: CardsReducerState = {
     cards: shuffledDeck.slice(0,5),
     cardsToChange: [],
     points: 0,
-    cardLayoutLabel: 'test'
+    cardLayoutLabel: ''
   },
   gameDeck:  shuffledDeck.slice(10),
   isStartGame: false,
@@ -63,10 +63,28 @@ const gameReducer = createSlice({
     }, 
     setIsChecking: (state) => {
       state.isChecking = !state.isChecking;
+    },
+    setInitialState: (state) => {
+      shuffledDeck = shuffleArray(cardArray);
+      state.gameDeck = shuffledDeck.slice(10);
+      state.opponent = Object.assign({}, initialState.opponent, {
+        cards: shuffledDeck.slice(0,5)
+      });
+      state.player = Object.assign({}, initialState.player, {
+        cards: shuffledDeck.slice(5,10)
+      });
+      state.isStartGame = false;
+      state.isChecking = false;
     }
   },
 });
 
-export const { setGameDeck, setOpponentState, setPlayerState, setIsStart, setIsChecking } = gameReducer.actions;
+export const { 
+  setGameDeck,
+  setOpponentState,
+  setPlayerState,
+  setIsStart,
+  setIsChecking,
+  setInitialState } = gameReducer.actions;
 
 export default gameReducer.reducer;
