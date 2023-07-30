@@ -166,7 +166,6 @@ export default function Menu() {
       dispatch(setPlayerState({ ...gameState.player, cards: newPlCards }));
     });
   };
-  
 
   const exchangeCards = () => {
 
@@ -188,9 +187,11 @@ export default function Menu() {
       // bez tego nie zaznaczają się karty przeciwnika po wymianie
       setTimeout(() => {
         exchangeCardsLogic(opCardsForExchange, false);
-      }, 3);
+        dispatch(setIsChecking());
+      }, 5);
+    } else {
+      dispatch(setIsChecking());
     }
-    dispatch(setIsChecking());
   }
 
   const nextRoundClick = () => {
