@@ -32,13 +32,19 @@ const initialState: CardsReducerState = {
     cards: shuffledDeck.slice(5,10),
     cardsToChange: [],
     points: 0,
-    cardLayoutLabel: ''
+    cardLayoutLabel: {
+      text: '',
+      color: 'green',
+    }
   },
   opponent: {
     cards: shuffledDeck.slice(0,5),
     cardsToChange: [],
     points: 0,
-    cardLayoutLabel: ''
+    cardLayoutLabel: {
+      text: '',
+      color: 'green',
+    }
   },
   gameDeck:  shuffledDeck.slice(10),
   isStartGame: false,
@@ -65,12 +71,14 @@ const gameReducer = createSlice({
       state.isChecking = !state.isChecking;
     },
     setCardLayoutLabels: (state, action: PayloadAction<string[]>) => {
-      state.opponent.cardLayoutLabel = action.payload[0];
-      state.player.cardLayoutLabel = action.payload[1];
+      state.opponent.cardLayoutLabel.text = action.payload[0];
+      state.opponent.cardLayoutLabel.color = action.payload[1];
+      state.player.cardLayoutLabel.text = action.payload[2];
+      state.player.cardLayoutLabel.color = action.payload[3];
     },
     setPoints: (state, action: PayloadAction<number[]>) => {
-      state.opponent.points = action.payload[0];
-      state.player.points = action.payload[1];
+      state.opponent.points = state.opponent.points + action.payload[0];
+      state.player.points = state.player.points + action.payload[1];
     },
     setNextRoundState: (state, action: PayloadAction<number[]>) => {
       shuffledDeck = shuffleArray(cardArray);

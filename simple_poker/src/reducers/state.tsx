@@ -10,5 +10,10 @@ export type PlayerState = {
     cards: string[],
     points: number,
     cardsToChange: string[],
-    cardLayoutLabel: string
+    cardLayoutLabel: CardLayoutLabel
+}
+
+export type CardLayoutLabel = {
+    text: string,
+    color: string
 }

@@ -70,32 +70,39 @@ export default function Menu() {
 
     const updateStateAfterVerify = (points: number[], labels: string[]) => {
       dispatch(setPoints(points));
-      dispatch(setCardLayoutLabels(labels));
+      dispatch(setCardLayoutLabels(
+        [labels[0],
+         points[0] >= points[1] ? 'green' : 'red',
+          labels[1],
+          points[1] >= points[0] ? 'green' : 'red']));
     }
 
     const opponentRank = rankHand(opponentCards);
     const playerRank = rankHand(playerCards);
-  
-    if (handRanks.indexOf(opponentRank) < handRanks.indexOf(playerRank)) {
-      updateStateAfterVerify([1,0], [opponentRank, playerRank]);
-      return;
-    } else if (handRanks.indexOf(opponentRank) > handRanks.indexOf(playerRank)) {
-      updateStateAfterVerify([0,1], [opponentRank, playerRank]);
-      return;
-    } else {
-      const opponentHighCard = Math.max(...opponentCards.map(cardValue));
-      const playerHighCard = Math.max(...playerCards.map(cardValue));
-      if (opponentHighCard > playerHighCard) {
+    
+      if (handRanks.indexOf(opponentRank) < handRanks.indexOf(playerRank)) {
         updateStateAfterVerify([1,0], [opponentRank, playerRank]);
         return;
-      } else if (opponentHighCard < playerHighCard) {
+      } else if (handRanks.indexOf(opponentRank) > handRanks.indexOf(playerRank)) {
         updateStateAfterVerify([0,1], [opponentRank, playerRank]);
         return;
       } else {
+        const sortedOpponentCards = sortHand(opponentCards);
+        const sortedPlayerCards = sortHand(playerCards);
+        for (let i = sortedOpponentCards.length - 1; i >= 0; i--) {
+          const opponentHighCard = cardValue(sortedOpponentCards[i]);
+          const playerHighCard = cardValue(sortedPlayerCards[i]);
+          if (opponentHighCard > playerHighCard) {
+            updateStateAfterVerify([1,0], [opponentRank, playerRank]);
+            return;
+          } else if (opponentHighCard < playerHighCard) {
+            updateStateAfterVerify([0,1], [opponentRank, playerRank]);
+            return;
+          }
+        }
         updateStateAfterVerify([0,0], [opponentRank, playerRank]);
         return;
-      }
-    }
+      }   
   };
 
   const newGameClick = () => {
