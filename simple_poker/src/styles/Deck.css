@@ -1,0 +1,27 @@
+/* Style dla talii przeciwnika */
+.player-deck {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+  margin: 40px 0 40px 0;
+}
+
+.opponent-deck {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+  margin: 40px 0 40px 0;
+}
+
+.main-deck {
+}
+
+.points {
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  font-size: 80px;
+  font-weight: 800;
+  color: white;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
