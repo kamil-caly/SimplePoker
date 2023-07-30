@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { CardsReducerState, PlayerState } from './state';
+import { CardsReducerState, PlayerState } from '../store/state';
 
 const cardArray = [
   'AC', 'AD', 'AH', 'AS',
@@ -77,8 +77,8 @@ const gameReducer = createSlice({
       state.player.cardLayoutLabel.color = action.payload[3];
     },
     setPoints: (state, action: PayloadAction<number[]>) => {
-      state.opponent.points = state.opponent.points + action.payload[0];
-      state.player.points = state.player.points + action.payload[1];
+      state.opponent.points += action.payload[0];
+      state.player.points += action.payload[1];
     },
     setNextRoundState: (state, action: PayloadAction<number[]>) => {
       shuffledDeck = shuffleArray(cardArray);

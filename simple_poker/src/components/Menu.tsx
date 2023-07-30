@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
-import { CardsReducerState } from "./reducers/state";
-import { setNextRoundState, setIsChecking, setIsStart, setOpponentState, setPlayerState, setPoints, setCardLayoutLabels } from "./reducers/gameReducer";
+import { CardsReducerState } from "../store/state";
+import { setNextRoundState, setIsChecking, setIsStart, setOpponentState, setPlayerState, setPoints, setCardLayoutLabels } from "../reducers/gameReducer";
 import { useState, useEffect } from "react";
 
 type Card = string;
@@ -79,7 +79,8 @@ export default function Menu() {
 
     const opponentRank = rankHand(opponentCards);
     const playerRank = rankHand(playerCards);
-    
+
+    const verifyLogic = () => {
       if (handRanks.indexOf(opponentRank) < handRanks.indexOf(playerRank)) {
         updateStateAfterVerify([1,0], [opponentRank, playerRank]);
         return;
@@ -102,7 +103,10 @@ export default function Menu() {
         }
         updateStateAfterVerify([0,0], [opponentRank, playerRank]);
         return;
-      }   
+      }
+    } 
+    
+    verifyLogic();
   };
 
   const newGameClick = () => {
@@ -133,47 +137,36 @@ export default function Menu() {
   }
 
   const exchangeCardsLogic = (opCardsForExchange: string[], isPlayerExchanging = true) => {
-    const deck: string[] = gameState.gameDeck;
-    const opCardsForChangeIndexes: number[] = [];
-    for(let i = 0; i < 5; i ++) {
-      if(opCardsForExchange.includes(gameState.opponent.cards[i])) {
-        opCardsForChangeIndexes.push(i);
-      }
-    }
-
-    let incomingOpCards: string[] = deck.slice(0, opCardsForChangeIndexes.length);
-    let copyOpCards = [...gameState.opponent.cards];
-    let i = 0;
-
-    opCardsForChangeIndexes.forEach(c => {
-      copyOpCards[c] = incomingOpCards[i];
-      i++;
-    })
-    const newOpCards = copyOpCards;
-    dispatch(setOpponentState({...gameState.opponent, cards: newOpCards}));
-
-    if(!isPlayerExchanging)
-      return;
-
-    const plCardsForChangeIndexes: number[] = [];
-    for(let i = 0; i < 5; i ++) {
-      if(gameState.player.cardsToChange.includes(gameState.player.cards[i])) {
-        plCardsForChangeIndexes.push(i);
-      }
-    }
-
-    let incomingPlCards: string[] = deck.slice(opCardsForChangeIndexes.length, opCardsForChangeIndexes.length + plCardsForChangeIndexes.length);
-    let copyPlCards = [...gameState.player.cards];
-    i = 0;
-
-    plCardsForChangeIndexes.forEach(c => {
-      copyPlCards[c] = incomingPlCards[i];
-      i++;
-    })
-    const newPlCards = copyPlCards;
-
-    dispatch(setPlayerState({...gameState.player, cards: newPlCards}));
-  }
+    const exchangeCards = (cardsForExchange: string[], cards: string[], deck: string[], dispatchFn: Function) => {
+      const cardsForChangeIndexes: number[] = cards.map((card, i) => cardsForExchange.includes(card) ? i : -1).filter(index => index !== -1);
+  
+      const incomingCards: string[] = deck.slice(0, cardsForChangeIndexes.length);
+      const copyCards = [...cards];
+  
+      cardsForChangeIndexes.forEach((cardIndex, i) => {
+        copyCards[cardIndex] = incomingCards[i];
+      });
+  
+      const newDeck = deck.slice(cardsForChangeIndexes.length);
+      dispatchFn(copyCards);
+      return newDeck;
+    };
+  
+    let deck: string[] = gameState.gameDeck;
+  
+    // Exchange opponent's cards
+    deck = exchangeCards(opCardsForExchange, gameState.opponent.cards, deck, (newOpCards: string[]) => {
+      dispatch(setOpponentState({ ...gameState.opponent, cards: newOpCards }));
+    });
+  
+    if(!isPlayerExchanging) return;
+  
+    // Exchange player's cards
+    deck = exchangeCards(gameState.player.cardsToChange, gameState.player.cards, deck, (newPlCards: string[]) => {
+      dispatch(setPlayerState({ ...gameState.player, cards: newPlCards }));
+    });
+  };
+  
 
   const exchangeCards = () => {
 
@@ -191,6 +184,8 @@ export default function Menu() {
     if(!changeCardsClicked) {
       setChangeCardsClicked(true);
       const opCardsForExchange = getCardsForExchangeByOpponent();
+
+      // bez tego nie zaznaczają się karty przeciwnika po wymianie
       setTimeout(() => {
         exchangeCardsLogic(opCardsForExchange, false);
       }, 3);
@@ -206,9 +201,9 @@ export default function Menu() {
   return (
     <div className="menu">
         <button className="main-button next-button" onClick={nextRoundClick} hidden={!gameState.isChecking}>Next</button>
-        <button className="main-button" onClick={() => newGameClick()} disabled={gameState.isStartGame}>NewGame</button>
-        <button className="main-button" onClick={() => exchangeCards()} disabled={!gameState.isStartGame || changeCardsClicked}>Change Cards</button>
-        <button className="main-button" onClick={() => checkCards()} disabled={!gameState.isStartGame || gameState.isChecking}>Check Cards</button>
+        <button className="main-button" onClick={newGameClick} disabled={gameState.isStartGame}>NewGame</button>
+        <button className="main-button" onClick={exchangeCards} disabled={!gameState.isStartGame || changeCardsClicked}>Change Cards</button>
+        <button className="main-button" onClick={checkCards} disabled={!gameState.isStartGame || gameState.isChecking}>Check Cards</button>
     </div>
   );
 }

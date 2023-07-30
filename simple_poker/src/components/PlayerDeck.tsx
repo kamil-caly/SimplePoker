@@ -1,7 +1,6 @@
 import { useSelector } from "react-redux";
 import Card from "./Card";
-import { CardsReducerState } from "./reducers/state";
-import { useState } from "react";
+import { CardsReducerState } from "../store/state";
 
 type OpponentDeckProps = {
 

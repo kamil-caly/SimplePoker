@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { deckOfCards } from "./DeckOfCards";
 import { useDispatch, useSelector } from "react-redux";
-import { CardsReducerState } from "./reducers/state";
-import { setPlayerState } from "./reducers/gameReducer";
+import { CardsReducerState } from "../store/state";
+import { setPlayerState } from "../reducers/gameReducer";
 
 type CardProps = {
     id: number
@@ -50,7 +50,7 @@ export default function Card(props: CardProps) {
 
     return (
         <>
-            <img src={require(`./assets/images/${props.hiden ? 'default.png' : cardPng}`)} 
+            <img src={require(`../assets/images/${props.hiden ? 'default.png' : cardPng}`)} 
             key={props.id}
             id={props.id.toString()}
             alt={cardPng.split('.')[0]} 
