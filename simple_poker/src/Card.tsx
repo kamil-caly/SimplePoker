@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { deckOfCards } from "./DeckOfCards";
 import { useDispatch, useSelector } from "react-redux";
 import { CardsReducerState } from "./reducers/state";
@@ -25,6 +25,10 @@ export default function Card(props: CardProps) {
         }
     }, [gameState.opponent.cardsToChange])
 
+    useEffect(() => {
+        setIsSelected(false);
+    }, [gameState.gameDeck])
+
     const selectCard = () => {
         let newPlayerState;
         if(isSelected) {
@@ -41,7 +45,7 @@ export default function Card(props: CardProps) {
         }
 
         dispatch(setPlayerState(newPlayerState));
-        setIsSelected(prevState => !prevState)
+        setIsSelected(prevState => !prevState);
     }
 
     return (
