@@ -9,7 +9,6 @@ type OpponentDeckProps = {
 
 export default function OpponentDeck(props: OpponentDeckProps) {
 
-    const [isCheck, setIsCheck] = useState<boolean>(false);
     const gameState = useSelector((state: CardsReducerState) => state);
 
     console.log("opponent state: ", gameState.opponent);
